@@ -119,7 +119,9 @@ function registerSocketEvents() {
             code: 'NE_CL_NSEROFF',
             message: 'Neutralino server is offline. Try restarting the application'
         };
-        events.dispatch('serverOffline', error);
+        const connectToken: string = getAuthToken().split('.')[1];
+        ws = new WebSocket(`ws://${window.location.hostname}:${window.NL_PORT}?connectToken=${connectToken}`);
+        // events.dispatch('serverOffline', error);
     });
 
     ws.addEventListener('error', async (event) => {
