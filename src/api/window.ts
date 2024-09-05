@@ -90,6 +90,8 @@ export type DraggableRegionOptions = {
      * Defaults to `10`. (In pixels.)
      */
     dragMinDistance?: number;
+
+    dragMaxDistance?: number;
 }
 export function setDraggableRegion(domElementOrId: string | HTMLElement, options: DraggableRegionOptions = {}): Promise<{
     success: true,
@@ -138,6 +140,10 @@ export function setDraggableRegion(domElementOrId: string | HTMLElement, options
                     draggableRegion.setPointerCapture(evt.pointerId);
                     isPointerCaptured = true;
                 }
+            }
+
+            if (absDragMovementDistance >= (options.dragMaxDistance ?? 200)) {
+                shouldReposition = false;
             }
 
             if (shouldReposition) {
