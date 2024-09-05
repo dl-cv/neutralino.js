@@ -142,23 +142,17 @@ export function setDraggableRegion(domElementOrId: string | HTMLElement, options
 
             if (shouldReposition) {
 
-                const currentMilliseconds = performance.now();
-                const timeTillLastMove = currentMilliseconds - lastMoveTimestamp;
-                // Limit move calls to 1 per every 5ms - TODO: introduce constant instead of magic number?
-                if (timeTillLastMove < 5) {
-                    // Do not execute move more often than 1x every 5ms or performance will drop
-                    return;
-                }
-
-                // Store current time minus the offset
-                lastMoveTimestamp = currentMilliseconds - (timeTillLastMove - 5);
+                let rect = document.body.getBoundingClientRect();
+                let fixX = rect.left;
+                let fixY = rect.top;
+                let scale = window.devicePixelRatio;
 
                 await move(
-                    evt.screenX - initialClientX,
-                    evt.screenY - initialClientY
-                );
+                  (evt.screenX - initialClientX - fixX - 6) * scale,
+                  (evt.screenY - initialClientY - fixY) * scale
+                )
 
-                return;
+                return ;
             }
         }
 
@@ -173,6 +167,10 @@ export function setDraggableRegion(domElementOrId: string | HTMLElement, options
         }
 
         function endPointerCapturing(evt: PointerEvent) {
+            if (isPointerCaptured) {
+                draggableRegion.releasePointerCapture(evt.pointerId);
+                isPointerCaptured = false;
+            }
             draggableRegion.removeEventListener('pointermove', onPointerMove);
             draggableRegion.releasePointerCapture(evt.pointerId);
         }
