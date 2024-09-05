@@ -115,16 +115,34 @@ function registerSocketEvents() {
     });
 
     ws.addEventListener('close', async (event) => {
+        console.log('ws close');
         const error = {
             code: 'NE_CL_NSEROFF',
             message: 'Neutralino server is offline. Try restarting the application'
         };
         const connectToken: string = getAuthToken().split('.')[1];
-        ws = new WebSocket(`ws://${window.location.hostname}:${window.NL_PORT}?connectToken=${connectToken}`);
+
+        while(true) {
+            try {
+                console.log('ws reconnect');
+                ws = new WebSocket(`ws://${window.location.hostname}:${window.NL_PORT}?connectToken=${connectToken}`);
+                await new Promise<void>((resolve, reject) => {
+                    ws.onopen = () => resolve();
+                    ws.onerror = (err) => reject(err);
+                });
+                break;
+            }
+            catch(err) {
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+            }
+        }
+        console.log('ws reconnect success');
+
         // events.dispatch('serverOffline', error);
     });
 
     ws.addEventListener('error', async (event) => {
+        console.log('ws error');
         handleConnectError();
     });
 }
