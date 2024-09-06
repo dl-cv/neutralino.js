@@ -93,6 +93,9 @@ export type DraggableRegionOptions = {
 
     dragMaxDistance?: number;
 }
+
+import { window_focus } from '../ws/websocket';
+
 export function setDraggableRegion(domElementOrId: string | HTMLElement, options: DraggableRegionOptions = {}): Promise<{
     success: true,
     message: string
@@ -120,7 +123,7 @@ export function setDraggableRegion(domElementOrId: string | HTMLElement, options
                 message: 'This DOM element is already an active draggable region'
             });
         }
-
+        console.log("setDraggableRegion");
         draggableRegion.addEventListener('pointerdown', startPointerCapturing);
         draggableRegion.addEventListener('pointerup', endPointerCapturing);
         draggableRegion.addEventListener('pointercancel', endPointerCapturing);
@@ -145,6 +148,12 @@ export function setDraggableRegion(domElementOrId: string | HTMLElement, options
             if (absDragMovementDistance >= (options.dragMaxDistance ?? 200)) {
                 shouldReposition = false;
             }
+
+            if ( !window_focus ){
+                shouldReposition = false;
+                isPointerCaptured = false;
+            }
+            console.log("shouldReposition: ", shouldReposition);
 
             if (shouldReposition) {
 
