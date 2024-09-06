@@ -126,6 +126,7 @@ export function setDraggableRegion(domElementOrId: string | HTMLElement, options
         draggableRegion.addEventListener('pointerdown', startPointerCapturing);
         draggableRegion.addEventListener('pointerup', endPointerCapturing);
         draggableRegion.addEventListener('pointercancel', endPointerCapturing);
+        draggableRegion.addEventListener('pointerleave', endPointerCapturing);
 
         draggableRegions.set(draggableRegion, { pointerdown: startPointerCapturing, pointerup: endPointerCapturing });
 
