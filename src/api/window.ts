@@ -123,7 +123,6 @@ export function setDraggableRegion(domElementOrId: string | HTMLElement, options
                 message: 'This DOM element is already an active draggable region'
             });
         }
-        console.log("setDraggableRegion");
         draggableRegion.addEventListener('pointerdown', startPointerCapturing);
         draggableRegion.addEventListener('pointerup', endPointerCapturing);
         draggableRegion.addEventListener('pointercancel', endPointerCapturing);
@@ -153,7 +152,7 @@ export function setDraggableRegion(domElementOrId: string | HTMLElement, options
                 shouldReposition = false;
                 isPointerCaptured = false;
             }
-            console.log("shouldReposition: ", shouldReposition);
+            console.debug("shouldReposition: ", shouldReposition);
 
             if (shouldReposition) {
 

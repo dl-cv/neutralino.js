@@ -108,7 +108,7 @@ function registerSocketEvents() {
             if(message.event == 'openedFile' && message?.data?.action == 'dataBinary') {
                 message.data.data = base64ToBytesArray(message.data.data);
             }
-            console.log('message.event', message.event);
+            console.debug('message.event', message.event);
             if (message.event == 'windowBlur'){
                 window_focus = false;
             }
