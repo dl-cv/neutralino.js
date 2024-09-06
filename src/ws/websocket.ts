@@ -81,6 +81,8 @@ function registerLibraryEvents() {
     });
 }
 
+export let window_focus = true;
+
 function registerSocketEvents() {
     ws.addEventListener('message', (event) => {
         const message = JSON.parse(event.data);
@@ -106,6 +108,14 @@ function registerSocketEvents() {
             if(message.event == 'openedFile' && message?.data?.action == 'dataBinary') {
                 message.data.data = base64ToBytesArray(message.data.data);
             }
+            console.log('message.event', message.event);
+            if (message.event == 'windowBlur'){
+                window_focus = false;
+            }
+            if (message.event == 'windowFocus'){
+                window_focus = true;
+            }
+
             events.dispatch(message.event, message.data);
         }
     });
@@ -124,8 +134,8 @@ function registerSocketEvents() {
 
         while(true) {
             try {
-                console.log('ws reconnect');
-                ws = new WebSocket(`ws://${window.location.hostname}:${window.NL_PORT}?connectToken=${connectToken}`);
+                console.log('re init()');
+                init();
                 await new Promise<void>((resolve, reject) => {
                     ws.onopen = () => resolve();
                     ws.onerror = (err) => reject(err);
@@ -136,7 +146,7 @@ function registerSocketEvents() {
                 await new Promise((resolve) => setTimeout(resolve, 1000));
             }
         }
-        console.log('ws reconnect success');
+        console.log('init() success');
 
         // events.dispatch('serverOffline', error);
     });
