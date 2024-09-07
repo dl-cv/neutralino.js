@@ -135,11 +135,15 @@ function registerSocketEvents() {
         while(true) {
             try {
                 console.log('re init()');
-                init();
+                ws = new WebSocket(`ws://${window.location.hostname}:${window.NL_PORT}?connectToken=${connectToken}`);
+
                 await new Promise<void>((resolve, reject) => {
                     ws.onopen = () => resolve();
                     ws.onerror = (err) => reject(err);
                 });
+
+                registerLibraryEvents();
+                registerSocketEvents();
                 break;
             }
             catch(err) {
